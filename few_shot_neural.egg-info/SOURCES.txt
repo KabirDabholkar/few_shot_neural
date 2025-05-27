@@ -1,9 +1,0 @@
-README.md
-setup.py
-few_shot_neural/__init__.py
-few_shot_neural/metrics.py
-few_shot_neural.egg-info/PKG-INFO
-few_shot_neural.egg-info/SOURCES.txt
-few_shot_neural.egg-info/dependency_links.txt
-few_shot_neural.egg-info/requires.txt
-few_shot_neural.egg-info/top_level.txt
