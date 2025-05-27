@@ -7,7 +7,6 @@ setup(
     install_requires=[
         "numpy",
         "torch",
-        "scikit-learn",
     ],
     description="Few-shot learning metrics for neural data",
     url="https://github.com/KabirDabholkar/few_shot_neural",

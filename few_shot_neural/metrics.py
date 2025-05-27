@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-from sklearn.metrics import r2_score
 from .poisson_regressor import PoissonRegressor
 
 def bits_per_spike(pred_rates, true_spikes):
