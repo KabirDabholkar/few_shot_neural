@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from sklearn.metrics import r2_score
+from .poisson_regressor import PoissonRegressor
 
 def bits_per_spike(pred_rates, true_spikes):
     """
@@ -83,8 +84,7 @@ def train_regressor_and_get_co_bps(train_latents, train_spikes, test_latents, te
         n_neurons = n_neurons - n_input_neurons
     
     # Train Poisson regressor
-    from sklearn.linear_model import PoissonRegressor
-    reg = PoissonRegressor(alpha=0.0, max_iter=1000, random_state=seed)
+    reg = PoissonRegressor(max_iter=1000, seed=seed)
     reg.fit(
         train_latents.reshape(-1, n_latents),
         train_spikes.reshape(-1, n_neurons)
