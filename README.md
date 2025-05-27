@@ -1,6 +1,6 @@
 # Few Shot Neural
 
-A Python package for computing few-shot learning metrics for neural data.
+A Python package for computing few-shot learning metrics for evaluating neural latent variable models.
 
 ## Installation
 
