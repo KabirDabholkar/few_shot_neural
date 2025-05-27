@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: few_shot_neural
+Version: 0.1.0
+Summary: Few-shot learning metrics for neural data
+Home-page: https://github.com/KabirDabholkar/few_shot_neural
+Requires-Python: >=3.7
+Requires-Dist: numpy
+Requires-Dist: torch
+Requires-Dist: scikit-learn
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

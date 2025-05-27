@@ -32,7 +32,3 @@ ensemble_score = get_k_shot_co_bps_ensemble(
     n_ensemble=10
 )
 ```
-
-## License
-
-MIT License 
