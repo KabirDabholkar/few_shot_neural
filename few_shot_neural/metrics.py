@@ -200,7 +200,7 @@ def get_k_shot_co_bps(train_latents, train_spikes, test_latents, test_spikes, k_
         seed=seed
     )
 
-def get_k_shot_co_bps_ensemble(train_latents, train_spikes, test_latents, test_spikes, k_trials, n_ensemble=5, n_input_neurons=None, seed=None):
+def get_k_shot_co_bps_ensemble(train_latents, train_spikes, test_latents, test_spikes, k_trials, n_ensemble=5, n_input_neurons=None, seed=None, return_std=False):
     """
     Compute k-shot co-bps multiple times with different random k-trial selections and average the results.
     
@@ -222,11 +222,14 @@ def get_k_shot_co_bps_ensemble(train_latents, train_spikes, test_latents, test_s
         Number of input neurons
     seed : int, optional
         Random seed for reproducibility
+    return_std : bool, optional
+        If True, return both mean and standard deviation of scores
         
     Returns:
     --------
-    float
-        Average k-shot co-bps score across ensemble
+    float or tuple
+        If return_std is False, returns average k-shot co-bps score across ensemble
+        If return_std is True, returns (mean, std) of k-shot co-bps scores
     """
     if seed is not None:
         np.random.seed(seed)
@@ -249,6 +252,8 @@ def get_k_shot_co_bps_ensemble(train_latents, train_spikes, test_latents, test_s
             scores.append(score)
     
     if not scores:  # If all scores were NaN/infinite
-        return np.nan
+        return (np.nan, np.nan) if return_std else np.nan
         
+    if return_std:
+        return np.mean(scores), np.std(scores)
     return np.mean(scores) 

@@ -629,4 +629,84 @@ def test_train_regressor_and_get_co_bps_invalid_inputs():
             train_spikes=torch.randn(n_trials, n_time_steps, n_neurons+1),
             test_latents=test_latents,
             test_spikes=test_spikes
-        ) 
+        )
+
+def test_get_k_shot_co_bps_ensemble_std(synthetic_data):
+    """Test that the standard deviation option works correctly in get_k_shot_co_bps_ensemble"""
+    inf_latents, inf_rates, true_spikes, n_input_neurons = synthetic_data
+    
+    # Set random seed for reproducibility
+    np.random.seed(42)
+    torch.manual_seed(42)
+    
+    # Split data into train and test sets
+    n_trials = inf_latents.shape[0]
+    train_trials = np.random.choice(n_trials, n_trials//2, replace=False)
+    test_trials = np.array([i for i in range(n_trials) if i not in train_trials])
+    
+    train_latents = inf_latents[train_trials]
+    train_spikes = true_spikes[train_trials]
+    test_latents = inf_latents[test_trials]
+    test_spikes = true_spikes[test_trials]
+    
+    # Test with return_std=True
+    n_ensemble = 5
+    mean_score, std_score = get_k_shot_co_bps_ensemble(
+        train_latents=train_latents,
+        train_spikes=train_spikes,
+        test_latents=test_latents,
+        test_spikes=test_spikes,
+        k_trials=5,
+        n_ensemble=n_ensemble,
+        n_input_neurons=n_input_neurons,
+        return_std=True,
+        seed=42
+    )
+    
+    # Check that both mean and std are floats
+    assert isinstance(mean_score, float)
+    assert isinstance(std_score, float)
+    
+    # Check that both are finite
+    assert np.isfinite(mean_score)
+    assert np.isfinite(std_score)
+    
+    # Check that std is non-negative
+    assert std_score >= 0
+    
+    # Check that mean is within reasonable bounds
+    assert mean_score < 10.0
+    
+    # Test with return_std=False (default)
+    mean_only = get_k_shot_co_bps_ensemble(
+        train_latents=train_latents,
+        train_spikes=train_spikes,
+        test_latents=test_latents,
+        test_spikes=test_spikes,
+        k_trials=5,
+        n_ensemble=n_ensemble,
+        n_input_neurons=n_input_neurons,
+        seed=42
+    )
+    
+    # Check that mean matches when return_std=False
+    assert np.isclose(mean_only, mean_score)
+    
+    # Test with all NaN scores
+    # Create data that will produce NaN scores
+    empty_train_latents = torch.zeros(0, train_latents.shape[1], train_latents.shape[2])
+    empty_train_spikes = torch.zeros(0, train_spikes.shape[1], train_spikes.shape[2])
+    
+    # Test that empty tensors raise ValueError
+    with pytest.raises(ValueError, match="Input tensors cannot be empty"):
+        get_k_shot_co_bps_ensemble(
+            train_latents=empty_train_latents,
+            train_spikes=empty_train_spikes,
+            test_latents=test_latents,
+            test_spikes=test_spikes,
+            k_trials=5,
+            n_ensemble=n_ensemble,
+            n_input_neurons=n_input_neurons,
+            return_std=True,
+            seed=42
+        )
